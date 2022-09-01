@@ -39,105 +39,20 @@
 // Issues to mind before changing anything:
 //  https://github.com/uBlockOrigin/uBlock-issues/issues/2154
 (function() {
-    alert("YEEEES");
-    console.log("Hello World2");
-    const target = '{{1}}';
-    if ( target === '' || target === '{{1}}' ) { return; }
-    const reRegexEscape = /[.*+?^${}()|[\]\\]/g;
-    const needle = '{{2}}';
-    const reNeedle = (( ) => {
-        if ( needle === '' || needle === '{{2}}' ) { return /^/; }
-        if ( /^\/.+\/$/.test(needle) ) {
-            return new RegExp(needle.slice(1,-1));
-        }
-        return new RegExp(needle.replace(reRegexEscape, '\\$&'));
-    })();
-    const context = '{{3}}';
-    const reContext = (( ) => {
-        if ( context === '' || context === '{{3}}' ) { return; }
-        if ( /^\/.+\/$/.test(context) ) {
-            return new RegExp(context.slice(1,-1));
-        }
-        return new RegExp(context.replace(reRegexEscape, '\\$&'));
-    })();
-    const thisScript = document.currentScript;
-    const chain = target.split('.');
-    let owner = window;
-    let prop;
-    for (;;) {
-        prop = chain.shift();
-        if ( chain.length === 0 ) { break; }
-        owner = owner[prop];
-        if ( owner instanceof Object === false ) { return; }
+  function keyboard_event_handler(e) {
+    // Don't prevent entering numbers in input areas
+    if (e.target.tagName == 'INPUT' ||
+	e.target.tagName == 'SELECT' ||
+	e.target.tagName == 'TEXTAREA' ||
+	e.target.isContentEditable) {
+	return;
     }
-    let value;
-    let desc = Object.getOwnPropertyDescriptor(owner, prop);
-    if (
-        desc instanceof Object === false ||
-        desc.get instanceof Function === false
-    ) {
-        value = owner[prop];
-        desc = undefined;
+    // Trap number keys
+    if (e.key >= '0' && e.key <= '9') {
+	e.stopImmediatePropagation();
     }
-    const magic = String.fromCharCode(Date.now() % 26 + 97) +
-                  Math.floor(Math.random() * 982451653 + 982451653).toString(36);
-    const scriptTexts = new WeakMap();
-    const getScriptText = elem => {
-        let text = elem.textContent;
-        if ( text.trim() !== '' ) { return text; }
-        if ( scriptTexts.has(elem) ) { return scriptTexts.get(elem); }
-        const [ , mime, content ] =
-            /^data:([^,]*),(.+)$/.exec(elem.src.trim()) ||
-            [ '', '', '' ];
-        try {
-            switch ( true ) {
-            case mime.endsWith(';base64'):
-                text = self.atob(content);
-                break;
-            default:
-                text = self.decodeURIComponent(content);
-                break;
-            }
-        } catch(ex) {
-        }
-        scriptTexts.set(elem, text);
-        return text;
-    };
-    const validate = ( ) => {
-        const e = document.currentScript;
-        if ( e instanceof HTMLScriptElement === false ) { return; }
-        if ( e === thisScript ) { return; }
-        if ( reContext !== undefined && reContext.test(e.src) === false ) {
-            return;
-        }
-        if ( reNeedle.test(getScriptText(e)) === false ) { return; }
-        throw new ReferenceError(magic);
-    };
-    Object.defineProperty(owner, prop, {
-        get: function() {
-            validate();
-            return desc instanceof Object
-                ? desc.get.call(owner)
-                : value;
-        },
-        set: function(a) {
-            validate();
-            if ( desc instanceof Object ) {
-                desc.set.call(owner, a);
-            } else {
-                value = a;
-            }
-        }
-    });
-    const oe = window.onerror;
-    window.onerror = function(msg) {
-        if ( typeof msg === 'string' && msg.includes(magic) ) {
-            return true;
-        }
-        if ( oe instanceof Function ) {
-            return oe.apply(this, arguments);
-        }
-    }.bind();
+}
+window.addEventListener('keydown', keyboard_event_handler, true);
 })();
 
 
