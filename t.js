@@ -33,11 +33,7 @@
 
 
 /// disable-altnumber-shortcut.js
-/// alias acis.js
-// Issues to mind before changing anything:
-//  https://github.com/uBlockOrigin/uBlock-issues/issues/2154
 (function() {
-	console.log("DONE");
 	function keyboard_event_handler(e) {
 		// Don't prevent entering numbers in input area
 		if (e.target.tagName == 'INPUT' ||
@@ -48,6 +44,7 @@
 		}
 		// Trap number keys
 		if (e.key >= '0' && e.key <= '9') {
+			console.log("disable alt+num shortcut");
 			e.stopImmediatePropagation();
 		}
 	}
