@@ -32,27 +32,26 @@
 
 
 
-/// abort-current-script.js
-/// alias acs.js
-/// alias abort-current-inline-script.js
+/// disable-altnumber-shortcut.js
 /// alias acis.js
 // Issues to mind before changing anything:
 //  https://github.com/uBlockOrigin/uBlock-issues/issues/2154
 (function() {
-  function keyboard_event_handler(e) {
-    // Don't prevent entering numbers in input areas
-    if (e.target.tagName == 'INPUT' ||
-	e.target.tagName == 'SELECT' ||
-	e.target.tagName == 'TEXTAREA' ||
-	e.target.isContentEditable) {
-	return;
-    }
-    // Trap number keys
-    if (e.key >= '0' && e.key <= '9') {
-	e.stopImmediatePropagation();
-    }
-}
-window.addEventListener('keydown', keyboard_event_handler, true);
+	console.log("DONE");
+	function keyboard_event_handler(e) {
+		// Don't prevent entering numbers in input area
+		if (e.target.tagName == 'INPUT' ||
+		e.target.tagName == 'SELECT' ||
+		e.target.tagName == 'TEXTAREA' ||
+		e.target.isContentEditable) {
+		return;
+		}
+		// Trap number keys
+		if (e.key >= '0' && e.key <= '9') {
+			e.stopImmediatePropagation();
+		}
+	}
+	window.addEventListener('keydown', keyboard_event_handler, true);
 })();
 
 
