@@ -39,7 +39,8 @@
 // Issues to mind before changing anything:
 //  https://github.com/uBlockOrigin/uBlock-issues/issues/2154
 (function() {
-    console.log("Hello World");
+    alert("YEEEES");
+    console.log("Hello World2");
     const target = '{{1}}';
     if ( target === '' || target === '{{1}}' ) { return; }
     const reRegexEscape = /[.*+?^${}()|[\]\\]/g;
